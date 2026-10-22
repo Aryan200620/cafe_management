@@ -1,0 +1,554 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cafe Management System</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --brown: #301b12;
+    --cream: #faf7f2;
+    --border: #e4dcd3;
+    --blue: #477bd1;
+    --green: #328568;
+    --red: #cb4d4d;
+    --text: #382b25;
+    --muted: #887b73;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+.app {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 274px;
+    background: var(--brown);
+    color: white;
+    padding: 32px 20px;
+    flex-shrink: 0;
+    min-height: 100vh;
+}
+
+.brand {
+    text-align: center;
+    margin: 8px 0 42px;
+}
+
+.brand-name {
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.brand-name span {
+    margin-right: 12px;
+}
+
+.brand-subtitle {
+    margin-top: 12px;
+    font-size: 18px;
+    color: #e4d5ca;
+}
+
+.section-label {
+    color: #b9a69a;
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: 700;
+    margin: 0 12px 16px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-decoration: none;
+    color: #f5eee9;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 14px 15px;
+    margin: 5px 0;
+    border-radius: 10px;
+    border-left: 4px solid transparent;
+    transition: background .2s, color .2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background: #492c1f;
+    color: #ffffff;
+    border-left-color: #d5a16e;
+}
+
+.nav-icon {
+    width: 24px;
+    text-align: center;
+    font-size: 19px;
+}
+
+.sidebar-footer {
+    margin: 55px 10px 0;
+    padding: 16px;
+    border: 1px solid #604637;
+    border-radius: 12px;
+    color: #e4d5ca;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* Main content */
+.main {
+    flex: 1;
+    min-width: 0;
+}
+
+.topbar {
+    min-height: 114px;
+    background: #fff;
+    padding: 28px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid #eee6df;
+}
+
+.topbar h1 {
+    font-size: 36px;
+    color: #211a16;
+}
+
+.welcome {
+    color: var(--muted);
+    font-size: 16px;
+}
+
+.content {
+    padding: 32px 36px;
+}
+
+.page {
+    display: none;
+    animation: appear .2s ease;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes appear {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Dashboard cards */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 36px;
+}
+
+.stat-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    padding: 27px 25px;
+    min-height: 174px;
+    box-shadow: 0 2px 5px rgba(48, 27, 18, .025);
+}
+
+.stat-icon {
+    font-size: 32px;
+    margin-bottom: 13px;
+}
+
+.stat-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #695950;
+}
+
+.stat-number {
+    font-size: 36px;
+    font-weight: 800;
+    margin-top: 12px;
+}
+
+.blue { color: var(--blue); }
+.green { color: var(--green); }
+.red { color: var(--red); }
+.brown-text { color: #89603c; }
+
+/* Welcome panel */
+.panel {
+    background: #fff;
+    border: 1px solid var(--border);
+    padding: 48px 32px;
+    min-height: 310px;
+}
+
+.welcome-panel {
+    text-align: center;
+}
+
+.welcome-panel h2 {
+    font-size: 30px;
+    margin-bottom: 17px;
+}
+
+.welcome-panel p {
+    color: var(--muted);
+    font-size: 18px;
+    margin-bottom: 25px;
+}
+
+.quick-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.quick-link {
+    display: inline-block;
+    color: #684630;
+    background: #faf4ee;
+    border: 1px solid #eadbce;
+    text-decoration: none;
+    padding: 12px 17px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.quick-link:hover {
+    background: #efe0d2;
+}
+
+/* Inner pages */
+.page-heading {
+    font-size: 25px;
+    margin-bottom: 10px;
+}
+
+.page-description {
+    color: var(--muted);
+    margin-bottom: 26px;
+    line-height: 1.6;
+}
+
+.info-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px;
+    margin-bottom: 18px;
+}
+
+.info-card h3 {
+    margin-bottom: 12px;
+}
+
+.info-card p {
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.status {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 20px;
+    background: #e4f5eb;
+    color: #26764b;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 15px;
+}
+
+.mobile-menu {
+    display: none;
+    border: 0;
+    background: var(--brown);
+    color: white;
+    padding: 9px 12px;
+    border-radius: 7px;
+    font-size: 20px;
+}
+
+@media (max-width: 1050px) {
+    .sidebar { width: 225px; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .content { padding: 25px; }
+    .topbar { padding: 24px 25px; }
+}
+
+@media (max-width: 650px) {
+    .app { display: block; }
+    .sidebar {
+        display: none;
+        width: 100%;
+        min-height: auto;
+    }
+    .sidebar.open { display: block; }
+    .mobile-menu { display: inline-block; }
+    .topbar { padding: 20px; }
+    .topbar h1 { font-size: 25px; }
+    .welcome { display: none; }
+    .content { padding: 18px; }
+    .stats { grid-template-columns: 1fr; }
+    .panel { padding: 28px 18px; }
+    .welcome-panel h2 { font-size: 23px; }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <div class="brand-name"><span>☕</span>CAFE</div>
+            <div class="brand-subtitle">Management</div>
+        </div>
+
+        <div class="section-label">CORE MENU</div>
+
+        <nav aria-label="Main navigation">
+            <a class="nav-link active" href="#dashboard" data-page="dashboard">
+                <span class="nav-icon">⌂</span> Dashboard
+            </a>
+            <a class="nav-link" href="#menu" data-page="menu">
+                <span class="nav-icon">☕</span> Menu
+            </a>
+            <a class="nav-link" href="#orders" data-page="orders">
+                <span class="nav-icon">🛒</span> Orders
+            </a>
+            <a class="nav-link" href="#customers" data-page="customers">
+                <span class="nav-icon">♟</span> Customers
+            </a>
+            <a class="nav-link" href="#employees" data-page="employees">
+                <span class="nav-icon">♙</span> Employees
+            </a>
+            <a class="nav-link" href="#sales" data-page="sales">
+                <span class="nav-icon">▣</span> Sales
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <strong>● SYSTEM STABLE</strong><br>
+            Cafe Management System<br>
+            Navigation testing environment
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div style="display:flex;align-items:center;gap:14px">
+                <button class="mobile-menu" id="mobileMenu"
+                        aria-label="Toggle navigation">☰</button>
+                <h1 id="pageTitle">Dashboard</h1>
+            </div>
+            <div class="welcome">Welcome, admin</div>
+        </header>
+
+        <div class="content">
+
+            <section class="page active" id="dashboard">
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">🛒</div>
+                        <div class="stat-label">Total Orders</div>
+                        <div class="stat-number blue">0</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon green">👥</div>
+                        <div class="stat-label">Customers</div>
+                        <div class="stat-number green">2</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon brown-text">💰</div>
+                        <div class="stat-label">Total Sales</div>
+                        <div class="stat-number brown-text">₹0.00</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon red">👨‍💼</div>
+                        <div class="stat-label">Employees</div>
+                        <div class="stat-number red">0</div>
+                    </div>
+                </div>
+
+                <div class="panel welcome-panel">
+                    <h2>☕ Welcome to your Cafe!</h2>
+                    <p>Manage your cafe from one place.</p>
+
+                    <div class="quick-links">
+                        <a class="quick-link" href="#menu" data-page="menu">
+                            ☕ Manage Menu
+                        </a>
+                        <a class="quick-link" href="#orders" data-page="orders">
+                            🛒 Customer Orders
+                        </a>
+                        <a class="quick-link" href="#customers" data-page="customers">
+                            👥 Customers
+                        </a>
+                        <a class="quick-link" href="#employees" data-page="employees">
+                            👨‍💼 Employees
+                        </a>
+                        <a class="quick-link" href="#sales" data-page="sales">
+                            📊 Sales & Revenue
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="page" id="menu">
+                <h2 class="page-heading">Menu Management</h2>
+                <p class="page-description">
+                    View and manage cafe menu items.
+                </p>
+                <div class="info-card">
+                    <h3>☕ Cafe Menu</h3>
+                    <p>This section represents the menu navigation
+                       destination for link testing.</p>
+                    <span class="status">PAGE LOADED</span>
+                </div>
+            </section>
+
+            <section class="page" id="orders">
+                <h2 class="page-heading">Order Management</h2>
+                <p class="page-description">
+                    View and manage customer orders.
+                </p>
+                <div class="info-card">
+                    <h3>🛒 Customer Orders</h3>
+                    <p>This section represents the orders navigation
+                       destination for link testing.</p>
+                    <span class="status">PAGE LOADED</span>
+                </div>
+            </section>
+
+            <section class="page" id="customers">
+                <h2 class="page-heading">Customer Management</h2>
+                <p class="page-description">
+                    View and manage customer information.
+                </p>
+                <div class="info-card">
+                    <h3>👥 Customers</h3>
+                    <p>This section represents the customers navigation
+                       destination for link testing.</p>
+                    <span class="status">PAGE LOADED</span>
+                </div>
+            </section>
+
+            <section class="page" id="employees">
+                <h2 class="page-heading">Employee Management</h2>
+                <p class="page-description">
+                    View and manage cafe employees.
+                </p>
+                <div class="info-card">
+                    <h3>👨‍💼 Employees</h3>
+                    <p>This section represents the employees navigation
+                       destination for link testing.</p>
+                    <span class="status">PAGE LOADED</span>
+                </div>
+            </section>
+
+            <section class="page" id="sales">
+                <h2 class="page-heading">Sales & Revenue</h2>
+                <p class="page-description">
+                    Review sales and revenue information.
+                </p>
+                <div class="info-card">
+                    <h3>📊 Sales Overview</h3>
+                    <p>This section represents the sales navigation
+                       destination for link testing.</p>
+                    <span class="status">PAGE LOADED</span>
+                </div>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+<script>
+const links = document.querySelectorAll("[data-page]");
+const pages = document.querySelectorAll(".page");
+const pageTitle = document.getElementById("pageTitle");
+const sidebar = document.getElementById("sidebar");
+
+function showPage(pageName) {
+    const target = document.getElementById(pageName);
+
+    if (!target) {
+        return;
+    }
+
+    pages.forEach(page => {
+        page.classList.toggle("active", page.id === pageName);
+    });
+
+    document.querySelectorAll(".nav-link").forEach(link => {
+        link.classList.toggle(
+            "active",
+            link.dataset.page === pageName
+        );
+    });
+
+    const activeLink = document.querySelector(
+        '.nav-link[data-page="' + pageName + '"]'
+    );
+
+    pageTitle.textContent = activeLink
+        ? activeLink.textContent.trim()
+        : pageName.charAt(0).toUpperCase() + pageName.slice(1);
+
+    sidebar.classList.remove("open");
+}
+
+links.forEach(link => {
+    link.addEventListener("click", function(event) {
+        event.preventDefault();
+
+        const pageName = this.dataset.page;
+
+        if (!document.getElementById(pageName)) {
+            return;
+        }
+
+        history.pushState(null, "", "#" + pageName);
+        showPage(pageName);
+    });
+});
+
+window.addEventListener("popstate", function() {
+    showPage(location.hash.slice(1) || "dashboard");
+});
+
+document.getElementById("mobileMenu").addEventListener("click", () => {
+    sidebar.classList.toggle("open");
+});
+
+showPage(location.hash.slice(1) || "dashboard");
+</script>
+</body>
+</html>
